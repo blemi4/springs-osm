@@ -14,14 +14,14 @@ I chose Colorado Springs because Colorado is my favorite state to visit in both 
 
 I downloaded the XML file and ran it thru my cosprings.ipynb code.  I also converted the file to a database and ran queries.  The three main problems I found were:
 
--Iconsistent formatting of street types (ex. '1107 W 4th st', 'Rockhill road')
+- Inconsistent formatting of street types (ex. '1107 W 4th st', 'Rockhill road')
 
--Inconsistent formatting of postal codes (ex. '12345-1234', '12345', 'CO12345')
+- Inconsistent formatting of postal codes (ex. '12345-1234', '12345', 'CO12345')
 
--Inconsistent formatting of phone numbers (ex. '+1-123-456-7890', '1234567890', '(123) 456-7890')
+- Inconsistent formatting of phone numbers (ex. '+1-123-456-7890', '1234567890', '(123) 456-7890')
 
--Incomplete data points (ex. Not all nodes that mark businesses contain addresses)
+- Incomplete data points (ex. Not all nodes that mark businesses contain addresses)
 
--Incomplete data (ex. Only three nodes represented grocery stores.  This can't be correct in a city the size of Colorado Springs.)
+- Incomplete data (ex. Only three nodes represented grocery stores.  This can't be correct in a city the size of Colorado Springs.)
 
 ### Street types
