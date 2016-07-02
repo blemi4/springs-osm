@@ -26,7 +26,7 @@ I downloaded the XML file and ran it thru my cosprings.ipynb code.  I also conve
 
 By running a python function to audit the street types, I was able to see which street addresses in the data set did not end in a word that met the expected standard.  This function returns a dictionary with the last word of a street address as the keys (if that word is not in 'expected'), and all of the street addresses that end with the non-conforming word as the values.
 
-'''python
+```python
 street_type_re = re.compile(r'\b\S+\.?$', re.IGNORECASE)
 
 expected = ["Street", "Avenue", "Boulevard", "Drive", "Court", "Place", "Square", "Lane", "Road", 
@@ -55,11 +55,11 @@ def audit_streets(osmfile):
     return street_types
 
 audit_streets(OSM)
-'''
+```
 
 After seeing how a lot of the street types were keyed in, I was able to create a dictionary where the incorrect formatting of the street types are the keys and the correctly formatted version are the values.  I then created the function update_street to replace the incorrect formatting with the correct formatting for street types found in 'mapping'.  This function does not fix all incorrectly formatted street types.  Not all street types are the last word of the street address.  For example, this function would not correct '1106 37th St. Suite 310' to '1106 37th Street Suite 310'.  To do this, I would need to create a function that iterates over each word looking for abbreviations.  However, update_street fixes the majority of the problems.
 
-'''python
+```python
 mapping = { "St": "Street","St.": "Street","Ct": "Court","Rd": "Road","Rd.": "Road","Ave": "Avenue","Ave.": "Avenue",
             "Blvd":"Boulevard","Blvd.":"Boulevard","Ct":"Court","Dr":"Drive","Dr.":"Drive","HWY":"Highway",
             "Hwy":"Highway","Ln":"Lane","Pkwy":"Parkway","RD":"Road","ST":"Street","STREET":"Street","Ter":"Terrace",
@@ -74,5 +74,5 @@ def update_street(name, mapping):
         if (street_type not in expected) and (street_type in mapping.keys()):                                
             name = re.sub(street_type_re,mapping[street_type],name)                                
     return name
-'''
+```
 
