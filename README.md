@@ -57,7 +57,7 @@ def audit_streets(osmfile):
 audit_streets(OSM)
 ```
 
-After seeing how a lot of the street types were keyed in, I was able to create a dictionary where the incorrect formatting of the street types are the keys and the correctly formatted version are the values.  I then created the function update_street to replace the incorrect formatting with the correct formatting for street types found in 'mapping'.  This function does not fix all incorrectly formatted street types.  Not all street types are the last word of the street address.  For example, this function would not correct '1106 37th St. Suite 310' to '1106 37th Street Suite 310'.  To do this, I would need to create a function that iterates over each word looking for abbreviations.  However, update_street fixes the majority of the problems.
+After seeing how a lot of the street types were keyed in, I was able to create a dictionary where the incorrect formatting of the street types are the keys and the correctly formatted version are the values.  I then created the function update_street, using regular expressions, to replace the incorrect formatting with the correct formatting for street types found in 'mapping'.  The function will replace '1106 Blue Pkwy' with '1106 Blue Parkway'.This function does not fix all incorrectly formatted street types.  Not all street types are the last word of the street address.  For example, this function would not correct '1106 37th St. Suite 310' to '1106 37th Street Suite 310'.  To fix all overabbreviated street names, I would need to create a function that iterates over each word looking for abbreviations.  However, update_street fixes the vast majority of the problems.
 
 ```python
 mapping = { "St": "Street","St.": "Street","Ct": "Court","Rd": "Road","Rd.": "Road","Ave": "Avenue","Ave.": "Avenue",
@@ -75,4 +75,40 @@ def update_street(name, mapping):
             name = re.sub(street_type_re,mapping[street_type],name)                                
     return name
 ```
+
+### Phone Number Problems
+
+By running a basic function in python to return phone numbers, I noticed that the formatting was inconsistent.  I defined a function, update_phone, to iterate over each character in the phone number and correct the formatting.  For example, the function will correct '(123) 456-7890' to '+1-123-456-7890'.
+
+```python
+def update_phone(phone):
+    phone = phone.replace(" ","")
+    p = list(phone) 
+    if len(phone)>8:
+        if p[0] != '+':
+            p[1:] = p[0:]
+            p[0] = '+'
+        if p[1] != '1':
+            p[2:] = p[1:]
+            p[1] = '1'
+        if p[2] != '-':
+            if p[2] == '(':
+                p[2] = '-'
+            else:
+                p[3:] = p[2:]
+                p[2] = '-'
+        if p[6] != '-':
+            if p[6] == ')':
+                p[6] = '-'
+            else:
+                p[7:] = p[6:]
+                p[6] = '-' 
+        if p[10] != '-':
+            p[11:] = p[10:]
+            p[10] = '-'
+    phone = "".join(p)
+    return phone
+```
+
+# Data Overview and Additional Ideas
 
