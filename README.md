@@ -2,7 +2,7 @@
 
 # OpenStreetMap Data Case Study
 
-## Map Area: Colorado Springs, CO, USA
+### Map Area: Colorado Springs, CO, USA
 
 Exploring and wrangling Open Street Map data for Colorado Springs
 
@@ -110,5 +110,41 @@ def update_phone(phone):
     return phone
 ```
 
-# Data Overview and Additional Ideas
+## Data Overview and Additional Ideas
+
+### File Sizes
+
+```
+cosprings.osm ............ 112 MB
+cosprings.db ............. 83.9 MB
+nodes.csv ................ 44.5 MB
+nodes_tags.csv ........... 673 KB
+ways.csv ................. 3.7 MB
+ways_nodes ............... 14.4 MB
+ways_tags ................ 7 MB
+```
+
+### Number of Nodes
+
+```
+sqlite> select count(*) from nds;
+```
+506830
+
+### Number of Ways
+
+```
+sqlite> select count(*) from ways;
+```
+59672
+
+### Maximum Longitude, Minimum Longitude, Maximum Latitude, and Minimum Latitude
+
+```
+sqlite> select max(lon), min(lon), max(lat), min(lat) from nds;
+```
+-104.905997,-104.6400065,39.001,38.7110068
+
+
+
 
