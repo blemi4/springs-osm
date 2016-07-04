@@ -202,14 +202,23 @@ sqlite> select count(*) as num from nds where id in (select distinct(id) from nd
 sqlite> select value, count(*) as num from ndtags where key='amenity' group by value order by num desc limit 10;
 ```
 fast_food, 109
+
 post_box, 102
+
 bench, 100
+
 restaurant, 98
+
 fuel, 65
+
 cafe, 29
+
 parking, 26
+
 school, 26
+
 toilets, 23
+
 waste_basket, 21
 
 
