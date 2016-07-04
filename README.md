@@ -145,6 +145,59 @@ sqlite> select max(lon), min(lon), max(lat), min(lat) from nds;
 ```
 -104.905997,-104.6400065,39.001,38.7110068
 
+### Number of Unique Users
+
+```
+sqlite> select count(distinct(j.uid)) as num from (select uid from nds union all select uid from ways) j;
+```
+401
+
+### Number of Banks vs. Number of Fast Food Restaurants by Quadrant
+
+Using the "avg()" function on latitude and longitude, I split the city into quadrants to compare the prevalence of banks vs. fast food restaurants in the city.  This could be done with any amenity, or other keys or values.  I chose banks and fast food restaurants because I thought the relationship between the two might have some predictive value of the socioeconomic layout of the city.  If predictive, it may have some value to policy makers and/or researchers.
+
+#### 1st Quadrant
+```
+sqlite> select count(*) as num from nds where id in (select distinct(id) from ndtags where value='fast_food') and lat>=(select avg(lat) from nds) and lon>=(select avg(lon) from nds);
+```
+32
+```
+sqlite> select count(*) as num from nds where id in (select distinct(id) from ndtags where value='bank') and lat>=(select avg(lat) from nds) and lon>=(select avg(lon) from nds);
+```
+3
+
+#### 2nd Quadrant
+```
+sqlite> select count(*) as num from nds where id in (select distinct(id) from ndtags where value='fast_food') and lat<=(select avg(lat) from nds) and lon>=(select avg(lon) from nds);
+```
+11
+```
+sqlite> select count(*) as num from nds where id in (select distinct(id) from ndtags where value='bank') and lat<=(select avg(lat) from nds) and lon>=(select avg(lon) from nds);
+```
+1
+
+#### 3rd Quadrant
+```
+sqlite> select count(*) as num from nds where id in (select distinct(id) from ndtags where value='fast_food') and lat>=(select avg(lat) from nds) and lon<=(select avg(lon) from nds);
+```
+45
+```
+sqlite> select count(*) as num from nds where id in (select distinct(id) from ndtags where value='bank') and lat>=(select avg(lat) from nds) and lon<=(select avg(lon) from nds);
+```
+6
+
+#### 4th Quadrant
+```
+sqlite> select count(*) as num from nds where id in (select distinct(id) from ndtags where value='fast_food') and lat<=(select avg(lat) from nds) and lon<=(select avg(lon) from nds);
+```
+21
+```
+sqlite> select count(*) as num from nds where id in (select distinct(id) from ndtags where value='bank') and lat<=(select avg(lat) from nds) and lon<=(select avg(lon) from nds);
+```
+6
+
+
+
 
 
 
