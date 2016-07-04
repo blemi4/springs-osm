@@ -143,7 +143,7 @@ sqlite> select count(*) from ways;
 ```
 sqlite> select max(lon), min(lon), max(lat), min(lat) from nds;
 ```
--104.905997,-104.6400065,39.001,38.7110068
+-104.905997, -104.6400065, 39.001, and 38.7110068
 
 ### Number of Unique Users
 
@@ -160,43 +160,57 @@ Using the "avg()" function on latitude and longitude, I split the city into quad
 ```
 sqlite> select count(*) as num from nds where id in (select distinct(id) from ndtags where value='fast_food') and lat>=(select avg(lat) from nds) and lon>=(select avg(lon) from nds);
 ```
-32
+32 Fast Food Restaurants
 ```
 sqlite> select count(*) as num from nds where id in (select distinct(id) from ndtags where value='bank') and lat>=(select avg(lat) from nds) and lon>=(select avg(lon) from nds);
 ```
-3
+3 Banks
 
 #### 2nd Quadrant
 ```
 sqlite> select count(*) as num from nds where id in (select distinct(id) from ndtags where value='fast_food') and lat<=(select avg(lat) from nds) and lon>=(select avg(lon) from nds);
 ```
-11
+11 Fast Food Restaurants
 ```
 sqlite> select count(*) as num from nds where id in (select distinct(id) from ndtags where value='bank') and lat<=(select avg(lat) from nds) and lon>=(select avg(lon) from nds);
 ```
-1
+1 Bank
 
 #### 3rd Quadrant
 ```
 sqlite> select count(*) as num from nds where id in (select distinct(id) from ndtags where value='fast_food') and lat>=(select avg(lat) from nds) and lon<=(select avg(lon) from nds);
 ```
-45
+45 Fast Food Restaurants
 ```
 sqlite> select count(*) as num from nds where id in (select distinct(id) from ndtags where value='bank') and lat>=(select avg(lat) from nds) and lon<=(select avg(lon) from nds);
 ```
-6
+6 Banks
 
 #### 4th Quadrant
 ```
 sqlite> select count(*) as num from nds where id in (select distinct(id) from ndtags where value='fast_food') and lat<=(select avg(lat) from nds) and lon<=(select avg(lon) from nds);
 ```
-21
+21 Fast Food Restaurants
 ```
 sqlite> select count(*) as num from nds where id in (select distinct(id) from ndtags where value='bank') and lat<=(select avg(lat) from nds) and lon<=(select avg(lon) from nds);
 ```
-6
+6 Banks
 
+### 10 Most Common Amenities
 
+```
+sqlite> select value, count(*) as num from ndtags where key='amenity' group by value order by num desc limit 10;
+```
+fast_food, 109
+post_box, 102
+bench, 100
+restaurant, 98
+fuel, 65
+cafe, 29
+parking, 26
+school, 26
+toilets, 23
+waste_basket, 21
 
 
 
