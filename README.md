@@ -110,7 +110,7 @@ def update_phone(phone):
     return phone
 ```
 
-## Data Overview and Additional Ideas
+## Data Overview and Exploration
 
 ### File Sizes
 
@@ -214,5 +214,29 @@ toilets | 23
 waste_basket | 21
 ```
 
+## Additional Ideas
+
+As noted in the "Problems" section, the data is incomplete.  Also, there are only 401 distinct users who have contributed to the Colorado Springs OSM data.  I believe it would be beneficial to have more users contributing to the OSM data.  This would go a long way towards making the data set more complete.
+
+#### Partner with Educators
+
+One way to get more people adding to the data set would be to partner with educators.  If educators (particularly in Computer Science or Information Systems fields) could incentivize students to contribute to the data set, it would go a long way towards making the data more complete.
+
+Of course, there are problems with this approach.  More people adding to the data might make verifying the validity of entries quite a bit more challenging.  What is gained in completeness could be lost in accuracy.
+
+#### Further Exploration
+
+If the data were more complete, it could potentially make evaluating the layout of cities easier.  For instance, more complete data would allow comparisons of number of banks vs. number of fast food restaurants to be more useful.  Right now, there are only 16 banks in the map data for the area.  This number seems very low for a city the size of Colorado springs.
+
+Also, only 3 grocery stores are stored in the node tags data where value = 'grocery'.  Again, this seems almost impossible for a city of this size.
+
+```
+sqlite> select value, count(*) as num from ndtags where value='grocery' group by value order by num;
+```
+grocery,3
+
+If the data were more complete, we could more easily identify food deserts (areas characterized by lack of healthy food options; a lot of fast food and only a small amount of accessible grocers) using the same methodology I used to compare banks vs fast food in a given area.
+
+Hopefully more people will contribute to the OSM effort and/or the advent of new technologies will help us make the data more complete.  It is pretty incredible that this amount of semi clean data exists from purely open source.  I look forward to exploring the data more in depth in the future.
 
 
