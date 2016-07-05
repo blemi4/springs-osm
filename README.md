@@ -82,32 +82,16 @@ By running a basic function in python to return phone numbers, I noticed that th
 
 ```python
 def update_phone(phone):
-    phone = phone.replace(" ","")
-    p = list(phone) 
-    if len(phone)>8:
-        if p[0] != '+':
-            p[1:] = p[0:]
-            p[0] = '+'
-        if p[1] != '1':
-            p[2:] = p[1:]
-            p[1] = '1'
-        if p[2] != '-':
-            if p[2] == '(':
-                p[2] = '-'
-            else:
-                p[3:] = p[2:]
-                p[2] = '-'
-        if p[6] != '-':
-            if p[6] == ')':
-                p[6] = '-'
-            else:
-                p[7:] = p[6:]
-                p[6] = '-' 
-        if p[10] != '-':
-            p[11:] = p[10:]
-            p[10] = '-'
-    phone = "".join(p)
-    return phone
+    #Format all US phone numbers containing an area code to a standard format (+1-913-555-5555) 
+    phone =  re.sub('[^0-9]', '', phone)
+    if len(phone) <= 8:  # Add this caveat to ensure we don't try our formatting tool on phone numbers lacking area code
+        return phone
+    elif phone[0] != '1':
+        return "+{}-{}-{}-{}".format(
+        '1', phone[0:3], phone[3:6], phone[6:10])
+    elif phone[0]=='1':
+        return "+{}-{}-{}-{}".format(
+        phone[0], phone[1:4], phone[4:7], phone[7:11])
 ```
 
 ## Data Overview and Exploration
@@ -127,79 +111,130 @@ ways_tags ................ 7 MB
 ### Number of Nodes
 
 ```
-sqlite> select count(*) from nds;
+sqlite> select count(*) 
+from nds;
 ```
 506830
 
 ### Number of Ways
 
 ```
-sqlite> select count(*) from ways;
+sqlite> select count(*) 
+from ways;
 ```
 59672
 
 ### Maximum Longitude, Minimum Longitude, Maximum Latitude, and Minimum Latitude
 
 ```
-sqlite> select max(lon), min(lon), max(lat), min(lat) from nds;
+sqlite> select max(lon), min(lon), max(lat), min(lat) 
+from nds;
 ```
 -104.905997, -104.6400065, 39.001, and 38.7110068
 
 ### Number of Unique Users
 
 ```
-sqlite> select count(distinct(j.uid)) as num from (select uid from nds union all select uid from ways) j;
+sqlite> select count(distinct(j.uid)) as num 
+from (select uid from nds union all select uid from ways) j;
 ```
 401
 
 ### Number of Banks vs. Number of Fast Food Restaurants by Quadrant
 
-Using the "avg()" function on latitude and longitude, I split the city into quadrants to compare the prevalence of banks vs. fast food restaurants in the city.  This could be done with any amenity, or other keys or values.  I chose banks and fast food restaurants because I thought the relationship between the two might have some predictive value of the socioeconomic layout of the city.  If predictive, it may have some value to policy makers and/or researchers.
+Using the "avg()" function on latitude and longitude, I split the city into quadrants to compare the prevalence of banks vs. fast food restaurants in the city.  This could be done with any amenity, or other keys or values.  I chose banks and fast food restaurants because I thought the relationship between the two might have some predictive value of the socioeconomic layout of the city.  Fast food restaurants are likely a good predictor of population in general.  I would expect banks to be more prevalent in higher income areas.  If predictive, it may have some value to policy makers and/or researchers.
 
-#### 1st Quadrant
+#### 1st Quadrant (Northwest)
 ```
-sqlite> select count(*) as num from nds where id in (select distinct(id) from ndtags where value='fast_food') and lat>=(select avg(lat) from nds) and lon>=(select avg(lon) from nds);
+sqlite> select count(*) as num 
+from nds 
+where id in (select distinct(id) 
+from ndtags 
+where value='fast_food') 
+and lat>=(select avg(lat) from nds) 
+and lon>=(select avg(lon) from nds);
 ```
 32 Fast Food Restaurants
 ```
-sqlite> select count(*) as num from nds where id in (select distinct(id) from ndtags where value='bank') and lat>=(select avg(lat) from nds) and lon>=(select avg(lon) from nds);
+sqlite> select count(*) as num 
+from nds 
+where id in (select distinct(id) 
+from ndtags where value='bank') 
+and lat>=(select avg(lat) from nds) 
+and lon>=(select avg(lon) from nds);
 ```
 3 Banks
 
-#### 2nd Quadrant
+#### 2nd Quadrant (Southwest)
 ```
-sqlite> select count(*) as num from nds where id in (select distinct(id) from ndtags where value='fast_food') and lat<=(select avg(lat) from nds) and lon>=(select avg(lon) from nds);
+sqlite> select count(*) as num 
+from nds 
+where id in (select distinct(id) 
+from ndtags where value='fast_food') 
+and lat<=(select avg(lat) from nds) 
+and lon>=(select avg(lon) from nds);
 ```
 11 Fast Food Restaurants
 ```
-sqlite> select count(*) as num from nds where id in (select distinct(id) from ndtags where value='bank') and lat<=(select avg(lat) from nds) and lon>=(select avg(lon) from nds);
+sqlite> select count(*) as num 
+from nds 
+where id in (select distinct(id) 
+from ndtags where value='bank') 
+and lat<=(select avg(lat) from nds) 
+and lon>=(select avg(lon) from nds);
 ```
 1 Bank
 
-#### 3rd Quadrant
+#### 3rd Quadrant (Northeast)
 ```
-sqlite> select count(*) as num from nds where id in (select distinct(id) from ndtags where value='fast_food') and lat>=(select avg(lat) from nds) and lon<=(select avg(lon) from nds);
+sqlite> select count(*) as num 
+from nds 
+where id in (select distinct(id) 
+from ndtags 
+where value='fast_food') 
+and lat>=(select avg(lat) from nds) 
+and lon<=(select avg(lon) from nds);
 ```
 45 Fast Food Restaurants
 ```
-sqlite> select count(*) as num from nds where id in (select distinct(id) from ndtags where value='bank') and lat>=(select avg(lat) from nds) and lon<=(select avg(lon) from nds);
+sqlite> select count(*) as num 
+from nds 
+where id in (select distinct(id) 
+from ndtags 
+where value='bank') 
+and lat>=(select avg(lat) from nds) 
+and lon<=(select avg(lon) from nds);
 ```
 6 Banks
 
-#### 4th Quadrant
+#### 4th Quadrant (Southeast)
 ```
-sqlite> select count(*) as num from nds where id in (select distinct(id) from ndtags where value='fast_food') and lat<=(select avg(lat) from nds) and lon<=(select avg(lon) from nds);
+sqlite> select count(*) as num 
+from nds 
+where id in (select distinct(id) 
+from ndtags where value='fast_food') 
+and lat<=(select avg(lat) from nds) 
+and lon<=(select avg(lon) from nds);
 ```
 21 Fast Food Restaurants
 ```
-sqlite> select count(*) as num from nds where id in (select distinct(id) from ndtags where value='bank') and lat<=(select avg(lat) from nds) and lon<=(select avg(lon) from nds);
+sqlite> select count(*) as num 
+from nds 
+where id in (select distinct(id) 
+from ndtags where value='bank') 
+and lat<=(select avg(lat) from nds) 
+and lon<=(select avg(lon) from nds);
 ```
 6 Banks
+
+If this data is accurate and complete, the relationships between these variables might tell us something useful about the population.  For instance, the 2nd Quadrant (southwest) looks much less populated than the rest of the city with only 11 fast food restaurants.  Also, the 1st Quadrant (northwest) has far fewer banks per fast food restaurant than the 4th quadrant (southeast). This could indicate a greater concentration of higher income earners in the the 4th quadrant (or just more people in general).  However, just by looking at the stats above, the data look incomplete.  I doubt a city the size of Colorado Springs only has 16 banks. Because of this, it would be a mistake to draw conclusions from the data.  There is also a potential classification problem.  For instance, banks could include pay day loan stores which I would expect to be more prevalent in lower income neighborhoods. 
 
 ### 10 Most Common Amenities
 
 ```
-sqlite> select value, count(*) as num from ndtags where key='amenity' group by value order by num desc limit 10;
+sqlite> select value, count(*) as num 
+from ndtags 
+where key='amenity' group by value order by num desc limit 10;
 ```
 ``` sql
 fast_food | 109
@@ -231,9 +266,13 @@ If the data were more complete, it could potentially make evaluating the layout 
 Also, only 3 grocery stores are stored in the node tags data where value = 'grocery'.  Again, this seems almost impossible for a city of this size.
 
 ```
-sqlite> select value, count(*) as num from ndtags where value='grocery' group by value order by num;
+sqlite> select value, count(*) as num 
+from ndtags 
+where value='grocery' 
+group by value 
+order by num;
 ```
-grocery,3
+grocery, 3
 
 If the data were more complete, we could more easily identify food deserts (areas characterized by lack of healthy food options; a lot of fast food and only a small amount of accessible grocers) using the same methodology I used to compare banks vs fast food in a given area.
 
